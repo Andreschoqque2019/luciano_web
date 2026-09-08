@@ -1,0 +1,18 @@
+# Local Pi runtime state
+.atl/
+.openspec/
+.env/
+
+# Env y secretos - nunca subir
+.env
+BACKEND/.env
+FRONTEND/.env
+FRONTEND/.env.local
+*.env
+
+# Deps y build
+node_modules/
+FRONTEND/dist/
+FRONTEND/node_modules/
+BACKEND/node_modules/
+.DS_Store

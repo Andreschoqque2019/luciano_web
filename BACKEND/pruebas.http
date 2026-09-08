@@ -1,0 +1,31 @@
+GET http://localhost:4000/
+
+
+###
+
+POST http://localhost:4000/crear
+Content-Type: application/json
+
+{
+  "name": "Juan",
+  "email": "juan@example.com",
+  "password": "123456"
+}
+
+###
+
+POST http://localhost:4000/api/solicitudes
+Content-Type: application/json
+
+{
+  "tipo": "pase",
+  "pais": "Perú",
+  "metodoPago": "Yape",
+  "numero_wasap": "+51999999999",
+  "nota_adicional": "por favor rápido"
+}
+
+
+
+
+

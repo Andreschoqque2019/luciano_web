@@ -1,0 +1,44 @@
+### Health check
+GET http://localhost:4000/
+### Crear solicitud válida
+POST http://localhost:4000/api/solicitudes
+Content-Type: application/json
+
+{
+  "tipo": "pase",
+  "pais": "Perú",
+  "metodoPago": "Yape",
+  "numero_wasap": "+51999999999",
+  "nota_adicional": "por favor rápido"
+}
+
+### Crear solicitud con nota vacía (opcional)
+POST http://localhost:4000/api/solicitudes
+Content-Type: application/json
+
+{
+  "tipo": "orbes",
+  "pais": "México",
+  "metodoPago": "Binance",
+  "numero_wasap": "969441234"
+}
+
+### Error validación - tipo inválido
+POST http://localhost:4000/api/solicitudes
+Content-Type: application/json
+
+{
+  "tipo": "invalido",
+  "pais": "Perú",
+  "metodoPago": "Yape",
+  "numero_wasap": "+51999999999"
+}
+
+### Listar todas
+GET http://localhost:4000/api/solicitudes
+
+### Filtrar por país y tipo
+GET http://localhost:4000/api/solicitudes?pais=Perú&tipo=pase
+
+### Obtener por ID (reemplazar con _id real)
+GET http://localhost:4000/api/solicitudes/000000000000000000000000

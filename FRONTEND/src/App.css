@@ -1,0 +1,1002 @@
+/* ── Solicitud Page ── */
+.solicitud-page {
+  display: grid;
+  place-items: center;
+  min-height: 100svh;
+  padding: 2rem 1rem;
+  background: var(--smoke);
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.solicitud-page::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url('/FOTO2.jpg');
+  background-size: cover;
+  background-position: center;
+  opacity: 0.04;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.solicitud-card {
+  width: min(100%, 32rem);
+  padding: clamp(1.5rem, 4vw, 2.5rem);
+  background: #ffffff;
+  border: 1px solid rgba(245, 158, 11, 0.14);
+  border-radius: 1rem;
+  box-shadow:
+    0 8px 32px rgba(15, 10, 10, 0.12),
+    0 2px 8px rgba(0, 0, 0, 0.06),
+    0 0 0 1px rgba(245, 158, 11, 0.06);
+  position: relative;
+}
+
+.solicitud-header {
+  margin-bottom: 1.75rem;
+  text-align: center;
+}
+
+.solicitud-header h1 {
+  margin: 0;
+  color: var(--dragon-red-deep);
+  font-size: clamp(1.5rem, 4vw, 1.875rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.solicitud-subtitle {
+  margin: 0.5rem 0 0;
+  color: var(--stone-500);
+  font-size: 0.9375rem;
+  line-height: 1.6;
+}
+
+.solicitud-form {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.form-field {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.form-field label {
+  color: var(--stone-700);
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.form-field input,
+.form-field select,
+.form-field textarea {
+  width: 100%;
+  padding: 0.7rem 0.85rem;
+  color: var(--obsidiana-soft);
+  background: #ffffff;
+  border: 1px solid var(--stone-300);
+  border-radius: 0.5rem;
+  font-size: 0.9375rem;
+  transition:
+    border-color 150ms ease,
+    box-shadow 150ms ease,
+    background 150ms ease;
+  appearance: none;
+}
+
+.form-field select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23575034' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  padding-right: 2.25rem;
+  cursor: pointer;
+}
+
+.form-field select:disabled {
+  background-color: var(--stone-100);
+  color: var(--stone-400);
+  cursor: not-allowed;
+  opacity: 1;
+}
+
+.form-field textarea {
+  resize: vertical;
+  min-height: 5.5rem;
+  line-height: 1.5;
+}
+
+.form-field input::placeholder,
+.form-field textarea::placeholder {
+  color: var(--stone-400);
+}
+
+.form-field input:focus,
+.form-field select:focus,
+.form-field textarea:focus {
+  border-color: var(--dragon-red);
+  box-shadow: 0 0 0 3px rgba(185, 28, 28, 0.14);
+  outline: none;
+}
+
+.form-field input[aria-invalid='true'],
+.form-field select[aria-invalid='true'],
+.form-field textarea[aria-invalid='true'] {
+  border-color: #dc2626;
+}
+
+.field-error {
+  margin: 0;
+  color: #dc2626;
+  font-size: 0.8125rem;
+  line-height: 1.4;
+}
+
+.field-hint {
+  color: var(--stone-400);
+  font-size: 0.75rem;
+  text-align: right;
+}
+
+.btn-primary {
+  width: 100%;
+  min-height: 2.75rem;
+  padding: 0.7rem 1.25rem;
+  color: #ffffff;
+  background: linear-gradient(135deg, var(--dragon-red) 0%, var(--dragon-red-deep) 100%);
+  border: 1px solid var(--dragon-red-deep);
+  border-radius: 0.5rem;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  box-shadow:
+    0 4px 14px rgba(185, 28, 28, 0.32),
+    0 1px 3px rgba(0, 0, 0, 0.12);
+  transition:
+    background 150ms ease,
+    transform 150ms ease,
+    box-shadow 150ms ease,
+    border-color 150ms ease;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, var(--dragon-red-hover) 0%, var(--dragon-red) 100%);
+  border-color: var(--gold);
+  box-shadow:
+    0 6px 20px rgba(185, 28, 28, 0.4),
+    0 0 12px rgba(245, 158, 11, 0.22);
+  transform: translateY(-1px);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(185, 28, 28, 0.3);
+}
+
+.btn-primary:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+
+/* ── Navigation ── */
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--obsidiana);
+  border-bottom: 1px solid rgba(245, 158, 11, 0.18);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.35);
+}
+
+.nav::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(245, 158, 11, 0.45), transparent);
+  pointer-events: none;
+}
+
+.nav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: 0.7rem 1.25rem;
+  position: relative;
+}
+
+.nav-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  color: var(--gold-light);
+  font-size: 1.0625rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+  transition: color 150ms ease, opacity 150ms ease;
+}
+
+.nav-brand:hover {
+  color: var(--gold);
+}
+
+.nav-logo {
+  width: 36px;
+  height: 36px;
+  border-radius: 6px;
+  object-fit: cover;
+  border: 1px solid rgba(245, 158, 11, 0.28);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+  flex-shrink: 0;
+  background: var(--obsidiana-soft);
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  flex-wrap: wrap;
+}
+
+.nav-link {
+  padding: 0.4rem 0.75rem;
+  border-radius: 0.375rem;
+  color: var(--stone-200);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  border: 1px solid transparent;
+  transition:
+    background 150ms ease,
+    color 150ms ease,
+    border-color 150ms ease,
+    box-shadow 150ms ease;
+}
+
+.nav-link:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.nav-link:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+
+.nav-link.is-active {
+  color: var(--gold);
+  background: linear-gradient(180deg, rgba(245, 158, 11, 0.1), rgba(185, 28, 28, 0.14));
+  border-color: rgba(245, 158, 11, 0.22);
+  box-shadow: inset 0 -2px 0 var(--dragon-red);
+}
+
+.nav-link.is-active:hover {
+  color: var(--gold-light);
+  background: linear-gradient(180deg, rgba(245, 158, 11, 0.14), rgba(185, 28, 28, 0.2));
+  border-color: rgba(245, 158, 11, 0.3);
+}
+
+/* ── Page container ── */
+.page-container {
+  display: grid;
+  place-items: center;
+  min-height: calc(100svh - 3.5rem);
+  padding: 2rem 1rem;
+  background: var(--smoke);
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.page-container::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url('/FOTO4.jpg');
+  background-size: cover;
+  background-position: center;
+  opacity: 0.035;
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Inicio: wrapper + visible gallery (FOTO1, FOTO2, FOTO5) */
+.inicio-wrap {
+  display: grid;
+  gap: 1.5rem;
+  width: min(100%, 36rem);
+  justify-items: center;
+}
+
+.inicio-gallery {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.9rem;
+  width: 100%;
+}
+
+.inicio-gallery__card {
+  margin: 0;
+  overflow: hidden;
+  border-radius: 0.85rem;
+  border: 1px solid rgba(245, 158, 11, 0.22);
+  box-shadow:
+    0 8px 24px rgba(15, 10, 10, 0.16),
+    0 2px 8px rgba(0, 0, 0, 0.08);
+  background: #fff;
+  position: relative;
+}
+
+.inicio-gallery__card img {
+  width: 100%;
+  height: 195px;
+  object-fit: cover;
+  display: block;
+  transition: transform 200ms ease;
+}
+
+.inicio-gallery__card:hover img {
+  transform: scale(1.03);
+}
+
+.inicio-gallery__card figcaption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 0.55rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--gold-light);
+  background: linear-gradient(to top, rgba(15, 10, 10, 0.72), transparent);
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.55);
+}
+
+@media (min-width: 640px) {
+  .inicio-gallery {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .inicio-gallery__card img {
+    height: 175px;
+  }
+}
+
+/* ── Responsive safeguards: no overflow, fluid media ── */
+.solicitud-card,
+.contactos-card,
+.hero,
+.inicio-wrap,
+.agendar-banner,
+.page-container,
+.agendar-page,
+.solicitud-page {
+  min-width: 0;
+}
+
+.form-field {
+  min-width: 0;
+}
+
+.form-field input,
+.form-field select,
+.form-field textarea {
+  min-width: 0;
+  max-width: 100%;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+.inicio-gallery__card img,
+.agendar-banner img,
+.contactos-banner-img {
+  max-width: 100%;
+}
+
+.hero h1,
+.solicitud-header h1,
+.contactos-card h1,
+.agendar-banner__caption {
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+/* Agendar: banner protagonist with FOTO2 + secondary FOTO5 */
+.agendar-page {
+  display: grid;
+  place-items: center;
+  gap: 1.15rem;
+  min-height: calc(100svh - 3.5rem);
+  padding: 2rem 1rem;
+  background: var(--smoke);
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.agendar-page::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url('/FOTO2.jpg');
+  background-size: cover;
+  background-position: center;
+  opacity: 0.04;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.agendar-banner {
+  width: min(100%, 32rem);
+  height: 200px;
+  border-radius: 1rem;
+  overflow: hidden;
+  position: relative;
+  border: 1px solid rgba(245, 158, 11, 0.22);
+  box-shadow:
+    0 8px 28px rgba(15, 10, 10, 0.18),
+    0 2px 8px rgba(0, 0, 0, 0.08);
+  background: var(--obsidiana);
+}
+
+.agendar-banner img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.agendar-banner::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(15, 10, 10, 0.62) 0%,
+    rgba(15, 10, 10, 0.2) 48%,
+    transparent 78%
+  );
+  pointer-events: none;
+}
+
+.agendar-banner__caption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  padding: 0.85rem 1rem;
+  color: var(--gold-light);
+  font-size: 0.8125rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.6);
+}
+
+.agendar-banner--secondary {
+  height: 168px;
+}
+
+/* Contactos: protagonist banner FOTO4 */
+.contactos-banner-img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  display: block;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(245, 158, 11, 0.22);
+  box-shadow:
+    0 8px 24px rgba(15, 10, 10, 0.14),
+    0 2px 8px rgba(0, 0, 0, 0.07);
+  margin-bottom: 1.2rem;
+}
+
+@media (max-width: 30rem) {
+  .agendar-banner {
+    height: 172px;
+    border-radius: 0.85rem;
+  }
+
+  .agendar-banner--secondary {
+    height: 148px;
+  }
+
+  .contactos-banner-img {
+    height: 170px;
+  }
+}
+
+/* ── Hero (Inicio) ── */
+.hero {
+  width: min(100%, 36rem);
+  text-align: center;
+  padding: clamp(1.5rem, 5vw, 3rem);
+  background: #ffffff;
+  border: 1px solid rgba(245, 158, 11, 0.14);
+  border-radius: 1rem;
+  box-shadow:
+    0 8px 32px rgba(15, 10, 10, 0.12),
+    0 2px 8px rgba(0, 0, 0, 0.06),
+    0 0 0 1px rgba(245, 158, 11, 0.06);
+  position: relative;
+  overflow: hidden;
+}
+
+.hero h1 {
+  margin: 0;
+  color: var(--dragon-red-deep);
+  font-size: clamp(1.5rem, 4vw, 2rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.hero-subtitle {
+  margin: 0.75rem 0 1.5rem;
+  color: var(--stone-500);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.hero-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  min-width: 12rem;
+  text-decoration: none;
+}
+
+/* Dragon variant: obsidiana overlay + FOTO3 */
+.hero.hero--dragon {
+  background:
+    linear-gradient(rgba(15, 10, 10, 0.72), rgba(15, 10, 10, 0.68)),
+    url('/FOTO3.jpg');
+  background-size: cover;
+  background-position: center;
+  border-color: rgba(245, 158, 11, 0.22);
+  box-shadow:
+    0 12px 40px rgba(0, 0, 0, 0.45),
+    0 0 0 1px rgba(245, 158, 11, 0.14);
+  color: #fff;
+}
+
+.hero.hero--dragon h1 {
+  color: var(--gold-light);
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.45);
+}
+
+.hero.hero--dragon .hero-subtitle {
+  color: #e7e5e4;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.4);
+}
+
+.hero.hero--dragon .hero-cta {
+  box-shadow:
+    0 6px 20px rgba(0, 0, 0, 0.35),
+    0 4px 14px rgba(185, 28, 28, 0.35);
+}
+
+.hero.hero--dragon .hero-cta:hover {
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.45),
+    0 0 16px rgba(245, 158, 11, 0.28);
+}
+
+/* ── Contactos ── */
+.contactos-card {
+  width: min(100%, 32rem);
+  padding: clamp(1.5rem, 4vw, 2.5rem);
+  background: #ffffff;
+  border: 1px solid rgba(245, 158, 11, 0.14);
+  border-radius: 1rem;
+  box-shadow:
+    0 8px 32px rgba(15, 10, 10, 0.12),
+    0 2px 8px rgba(0, 0, 0, 0.06),
+    0 0 0 1px rgba(245, 158, 11, 0.06);
+}
+
+.contactos-card h1 {
+  margin: 0;
+  color: var(--dragon-red-deep);
+  font-size: clamp(1.5rem, 4vw, 1.875rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.contactos-subtitle {
+  margin: 0.5rem 0 1.25rem;
+  color: var(--stone-500);
+  font-size: 0.9375rem;
+  line-height: 1.6;
+}
+
+.contactos-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.contactos-list li {
+  padding: 0.75rem 1rem;
+  background: var(--stone-50);
+  border: 1px solid var(--stone-200);
+  border-radius: 0.5rem;
+  font-size: 0.9375rem;
+  color: var(--stone-700);
+  transition: border-color 150ms ease, box-shadow 150ms ease;
+}
+
+.contactos-list li:hover {
+  border-color: rgba(245, 158, 11, 0.22);
+  box-shadow: 0 2px 8px rgba(15, 10, 10, 0.06);
+}
+
+.contactos-list a {
+  color: var(--dragon-red);
+  font-weight: 700;
+}
+
+.contactos-list a:hover {
+  color: var(--dragon-red-deep);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.contactos-label {
+  font-weight: 700;
+  color: var(--obsidiana-soft);
+}
+
+.contactos-nota {
+  margin: 1.25rem 0 0;
+  color: var(--stone-400);
+  font-size: 0.8125rem;
+  line-height: 1.6;
+}
+
+@media (max-width: 30rem) {
+  .solicitud-page {
+    padding: 1rem 0.75rem;
+  }
+
+  .solicitud-card {
+    padding: 1.25rem;
+    border-radius: 0.75rem;
+  }
+
+  .nav-inner {
+    padding: 0.6rem 1rem;
+    gap: 0.5rem;
+  }
+
+  .nav-logo {
+    width: 32px;
+    height: 32px;
+  }
+
+  .nav-brand {
+    font-size: 0.95rem;
+  }
+
+  .nav-link {
+    padding: 0.35rem 0.6rem;
+    font-size: 0.75rem;
+  }
+
+  .page-container {
+    padding: 1rem 0.75rem;
+  }
+
+  .hero.hero--dragon {
+    background-position: center top;
+  }
+}
+
+/* ── Fluid typography overrides (mobile-first clamp) ── */
+.hero h1 {
+  font-size: clamp(1.35rem, 6vw, 2rem);
+}
+
+.solicitud-header h1,
+.contactos-card h1 {
+  font-size: clamp(1.3rem, 5.5vw, 1.875rem);
+}
+
+.hero-subtitle,
+.solicitud-subtitle,
+.contactos-subtitle {
+  font-size: clamp(0.875rem, 2.5vw, 1rem);
+}
+
+/* ── Navigation: prevent wrap break, allow horizontal scroll on tiny screens ── */
+.nav-inner {
+  flex-wrap: wrap;
+}
+
+.nav-links {
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  max-width: 100%;
+}
+
+.nav-links::-webkit-scrollbar {
+  display: none;
+}
+
+.nav-link {
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* ── Extra small: 320–380px (celu muy chico) ── */
+@media (max-width: 380px) {
+  .solicitud-page,
+  .page-container,
+  .agendar-page {
+    padding: 1rem 0.75rem;
+    gap: 1rem;
+  }
+
+  .inicio-wrap {
+    gap: 1rem;
+    width: 100%;
+    padding: 0;
+  }
+
+  .hero {
+    padding: 1.1rem 1rem;
+    border-radius: 0.75rem;
+  }
+
+  .hero h1 {
+    font-size: clamp(1.2rem, 5.5vw, 1.45rem);
+    line-height: 1.25;
+  }
+
+  .hero-subtitle {
+    margin: 0.6rem 0 1.1rem;
+    line-height: 1.5;
+  }
+
+  .hero-cta {
+    min-width: 100%;
+    width: 100%;
+  }
+
+  .inicio-gallery {
+    gap: 0.75rem;
+  }
+
+  .inicio-gallery__card img {
+    height: 165px;
+  }
+
+  .agendar-banner {
+    height: 150px;
+    border-radius: 0.85rem;
+  }
+
+  .agendar-banner--secondary {
+    height: 132px;
+  }
+
+  .contactos-banner-img {
+    height: 150px;
+    margin-bottom: 1rem;
+  }
+
+  .solicitud-card,
+  .contactos-card {
+    padding: 1rem;
+    border-radius: 0.75rem;
+  }
+
+  .nav-inner {
+    padding: 0.5rem 0.75rem;
+    gap: 0.4rem;
+  }
+
+  .nav-logo {
+    width: 30px;
+    height: 30px;
+  }
+
+  .nav-brand {
+    font-size: 0.9rem;
+    gap: 0.5rem;
+  }
+
+  .nav-link {
+    padding: 0.32rem 0.5rem;
+    font-size: 0.72rem;
+  }
+
+  .form-field input,
+  .form-field select,
+  .form-field textarea {
+    font-size: 0.875rem;
+    padding: 0.6rem 0.75rem;
+  }
+
+  .form-field select {
+    padding-right: 2rem;
+    background-position: right 0.55rem center;
+  }
+}
+
+/* ── Tablet: 641px–1024px (2 cols gallery, banners intermedios) ── */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .page-container {
+    padding: 1.75rem 1.25rem;
+  }
+
+  .inicio-wrap {
+    width: min(100%, 38rem);
+    gap: 1.4rem;
+  }
+
+  .hero {
+    padding: clamp(1.75rem, 3vw, 2.25rem);
+  }
+
+  .hero h1 {
+    font-size: clamp(1.55rem, 2.8vw, 1.85rem);
+  }
+
+  .inicio-gallery {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.85rem;
+  }
+
+  .inicio-gallery__card img {
+    height: 190px;
+  }
+
+  /* Override earlier 3-col rule for tablet: force 2 cols */
+  .agendar-page {
+    padding: 1.75rem 1.25rem;
+    gap: 1.25rem;
+  }
+
+  .agendar-banner {
+    width: min(100%, 36rem);
+    height: 212px;
+  }
+
+  .agendar-banner--secondary {
+    height: 185px;
+  }
+
+  .contactos-banner-img {
+    height: 212px;
+  }
+
+  .solicitud-page {
+    padding: 1.75rem 1.25rem;
+  }
+
+  .solicitud-card {
+    width: min(100%, 36rem);
+    padding: clamp(1.6rem, 3vw, 2rem);
+  }
+
+  .contactos-card {
+    width: min(100%, 36rem);
+    padding: clamp(1.6rem, 3vw, 2rem);
+  }
+
+  .nav-inner {
+    padding: 0.75rem 1.5rem;
+    gap: 1.25rem;
+    max-width: 64rem;
+  }
+
+  .nav-brand {
+    font-size: 1rem;
+  }
+
+  .nav-link {
+    font-size: 0.84rem;
+    padding: 0.42rem 0.75rem;
+  }
+}
+
+/* ── Desktop: 1025px+ (3 cols gallery, max-widths amplios) ── */
+@media (min-width: 1025px) {
+  .page-container {
+    padding: 2.5rem 1.5rem;
+  }
+
+  .inicio-wrap {
+    width: min(100%, 40rem);
+    gap: 1.75rem;
+  }
+
+  .inicio-gallery {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.9rem;
+  }
+
+  .inicio-gallery__card img {
+    height: 175px;
+  }
+
+  .agendar-page {
+    padding: 2.5rem 1.5rem;
+    gap: 1.5rem;
+  }
+
+  .agendar-banner {
+    width: min(100%, 36rem);
+    height: 220px;
+  }
+
+  .agendar-banner--secondary {
+    height: 195px;
+  }
+
+  .contactos-banner-img {
+    height: 220px;
+  }
+
+  .solicitud-page {
+    padding: 2.5rem 1.5rem;
+  }
+
+  .solicitud-card {
+    width: min(100%, 36rem);
+  }
+
+  .contactos-card {
+    width: min(100%, 36rem);
+  }
+
+  .nav-inner {
+    padding: 0.75rem 1.5rem;
+    max-width: 64rem;
+  }
+
+  /* Hover states intact: slightly more breathing room on desktop */
+  .hero {
+    padding: clamp(2rem, 2.5vw, 3rem);
+  }
+}
+
+/* ── Ultra-wide: 1280px+ (opcional, mantiene proporciones) ── */
+@media (min-width: 1280px) {
+  .inicio-wrap {
+    width: min(100%, 42rem);
+  }
+
+  .solicitud-card,
+  .contactos-card {
+    width: min(100%, 38rem);
+  }
+
+  .agendar-banner {
+    width: min(100%, 38rem);
+  }
+}

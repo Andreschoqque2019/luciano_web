@@ -14,8 +14,8 @@ export default function ContactosPage() {
         <ul className="contactos-list">
           <li>
             <span className="contactos-label">WhatsApp:</span>{' '}
-            <a href="https://wa.me/5493516776923" target="_blank" rel="noopener noreferrer">
-              +54 9 11 1234-5678
+            <a href="https://wa.me/543516776923" target="_blank" rel="noopener noreferrer">
+              +54 3516776923
             </a>
           </li>
           <li>

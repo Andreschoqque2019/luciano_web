@@ -3,7 +3,8 @@
     { "source": "/api/solicitudes", "destination": "/api/solicitudes" },
     { "source": "/api/solicitudes/:path*", "destination": "/api/solicitudes" },
     { "source": "/api/:path*", "destination": "/api/:path*" },
-    { "source": "/(.*)", "destination": "/FRONTEND/dist/$1" }
+    { "source": "/assets/:path*", "destination": "/FRONTEND/dist/assets/:path*" },
+    { "source": "/(.*)", "destination": "/index.html" }
   ],
   "buildCommand": "npm install --prefix FRONTEND && npm run build --prefix FRONTEND && npm install --prefix BACKEND",
   "outputDirectory": "FRONTEND/dist",

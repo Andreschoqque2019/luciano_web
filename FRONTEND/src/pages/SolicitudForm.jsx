@@ -1,14 +1,16 @@
 import { useState } from 'react'
 import { TIPOS_SOLICITUD } from '../data/solicitudTipos.js'
-import { PAISES, PAGOS_POR_PAIS } from '../data/pagosPorPais.js'
+import { PAISES, PAGOS_POR_PAIS, PREFIJOS, getPrefijo } from '../data/pagosPorPais.js'
 import { crearSolicitud } from '../utils/api.js'
 
-const WHATSAPP_PATTERN = /^\+?[0-9\s\-()]{7,20}$/
+const WHATSAPP_LOCAL_PATTERN = /^[0-9]{7,12}$/
+const WHATSAPP_FULL_PATTERN = /^\+[0-9]{7,15}$/
 
 export default function SolicitudForm() {
   const [tipo, setTipo] = useState('')
   const [pais, setPais] = useState('')
   const [metodoPago, setMetodoPago] = useState('')
+  const [cantidad, setCantidad] = useState('')
   const [numeroWasap, setNumeroWasap] = useState('')
   const [notaAdicional, setNotaAdicional] = useState('')
   const [errors, setErrors] = useState({})
@@ -17,6 +19,7 @@ export default function SolicitudForm() {
   const [success, setSuccess] = useState('')
 
   const metodosDisponibles = pais ? PAGOS_POR_PAIS[pais] || [] : []
+  const prefijo = getPrefijo(pais)
 
   function handlePaisChange(e) {
     const nextPais = e.target.value
@@ -33,15 +36,66 @@ export default function SolicitudForm() {
     } else if (pais && !(PAGOS_POR_PAIS[pais] || []).includes(metodoPago)) {
       next.metodoPago = 'EL MÉTODO DE PAGO NO CORRESPONDE AL PAÍS SELECCIONADO DRAGONERO.'
     }
-    if (!numeroWasap.trim()) {
+    if (!String(cantidad).trim()) {
+      next.cantidad = 'LA CANTIDAD ES OBLIGATORIA DRAGONERO.'
+    } else {
+      const num = Number(cantidad)
+      if (!Number.isInteger(num) || num < 1 || num > 100) {
+        next.cantidad = 'LA CANTIDAD DEBE SER UN NÚMERO ENTERO ENTRE 1 Y 100 DRAGONERO.'
+      }
+    }
+    const wasapRaw = numeroWasap.trim()
+    if (!wasapRaw) {
       next.numero_wasap = 'EL NUMERO DE WHATSAPP ES OBLIGATORIO DRAGONERO.'
-    } else if (!WHATSAPP_PATTERN.test(numeroWasap.trim())) {
-      next.numero_wasap = 'EL NUMERO DE WHATSAPP ES OBLIGATORIO DRAGONERO.'
+    } else {
+      let normalized = wasapRaw.replace(/[\s\-()]/g, '')
+      if (normalized.startsWith('+')) {
+        if (prefijo && normalized.startsWith(prefijo)) {
+          const localPart = normalized.slice(prefijo.length)
+          if (!WHATSAPP_LOCAL_PATTERN.test(localPart)) {
+            next.numero_wasap = 'EL NUMERO DE WHATSAPP DEBE TENER ENTRE 7 Y 12 DÍGITOS NUMÉRICOS (SIN CONTAR PREFIJO) DRAGONERO.'
+          }
+        } else if (WHATSAPP_FULL_PATTERN.test(normalized)) {
+          // Usuario pegó número con prefijo de otro país: aceptar si formato total es válido
+          // Verificar que el resto sin prefijo tenga al menos 7 dígitos
+          const withoutPlus = normalized.slice(1)
+          // Intentar detectar prefijo conocido para validar local 7-12, si no, validar total 7-15
+          const matchedPrefijo = Object.values(PREFIJOS).find((p) => normalized.startsWith(p))
+          if (matchedPrefijo) {
+            const localPart = normalized.slice(matchedPrefijo.length)
+            if (!WHATSAPP_LOCAL_PATTERN.test(localPart)) {
+              next.numero_wasap = 'EL NUMERO DE WHATSAPP DEBE TENER ENTRE 7 Y 12 DÍGITOS NUMÉRICOS (SIN CONTAR PREFIJO) DRAGONERO.'
+            }
+          } else if (withoutPlus.length < 7 || withoutPlus.length > 15) {
+            next.numero_wasap = 'EL NUMERO DE WHATSAPP DEBE TENER ENTRE 7 Y 12 DÍGITOS NUMÉRICOS DRAGONERO.'
+          }
+        } else {
+          next.numero_wasap = 'EL NUMERO DE WHATSAPP DEBE TENER ENTRE 7 Y 12 DÍGITOS NUMÉRICOS DRAGONERO.'
+        }
+      } else if (normalized.startsWith('00')) {
+        const withPlus = `+${normalized.slice(2)}`
+        if (!WHATSAPP_FULL_PATTERN.test(withPlus)) {
+          next.numero_wasap = 'EL NUMERO DE WHATSAPP DEBE TENER ENTRE 7 Y 12 DÍGITOS NUMÉRICOS DRAGONERO.'
+        }
+      } else {
+        // Sin prefijo: validar solo dígitos locales 7-12
+        if (!WHATSAPP_LOCAL_PATTERN.test(normalized)) {
+          next.numero_wasap = 'EL NUMERO DE WHATSAPP DEBE TENER ENTRE 7 Y 12 DÍGITOS NUMÉRICOS DRAGONERO.'
+        }
+      }
     }
     if (notaAdicional.length > 500) {
       next.nota_adicional = 'LA NOTA ADICIONAL NO PUEDE EXCEDER LOS 500 CARACTERES DRAGONERO.'
     }
     return next
+  }
+
+  function buildNumeroWasapConPrefijo() {
+    const raw = numeroWasap.trim().replace(/[\s\-()]/g, '')
+    if (!raw) return ''
+    if (raw.startsWith('+')) return raw
+    if (raw.startsWith('00')) return `+${raw.slice(2)}`
+    return `${prefijo}${raw}`
   }
 
   async function handleSubmit(e) {
@@ -54,11 +108,13 @@ export default function SolicitudForm() {
 
     setLoading(true)
     try {
+      const numeroConPrefijo = buildNumeroWasapConPrefijo()
       const payload = {
         tipo,
         pais,
         metodoPago,
-        numero_wasap: numeroWasap.trim(),
+        numero_wasap: numeroConPrefijo,
+        cantidad: Number(cantidad),
         nota_adicional: notaAdicional.trim(),
       }
       const result = await crearSolicitud(payload)
@@ -67,6 +123,7 @@ export default function SolicitudForm() {
       setTipo('')
       setPais('')
       setMetodoPago('')
+      setCantidad('')
       setNumeroWasap('')
       setNotaAdicional('')
       setErrors({})
@@ -176,22 +233,68 @@ export default function SolicitudForm() {
       </div>
 
       <div className="form-field">
-        <label htmlFor="numero_wasap">NÚMERO DE WHATSAPP</label>
+        <label htmlFor="cantidad">Cantidad</label>
         <input
-          id="numero_wasap"
-          name="numero_wasap"
-          type="tel"
-          inputMode="tel"
-          autoComplete="tel"
-          placeholder="ejemplo: 969 441 234"
-          value={numeroWasap}
-          onChange={(e) => setNumeroWasap(e.target.value)}
+          id="cantidad"
+          name="cantidad"
+          type="number"
+          inputMode="numeric"
+          min={1}
+          max={100}
+          step={1}
+          placeholder="1"
+          value={cantidad}
+          onChange={(e) => setCantidad(e.target.value)}
           required
           aria-required="true"
-          aria-invalid={Boolean(errors.numero_wasap)}
-          aria-describedby={errors.numero_wasap ? 'error-numero_wasap' : undefined}
-          pattern="\+?[0-9\s\-()]{7,20}"
+          aria-invalid={Boolean(errors.cantidad)}
+          aria-describedby={errors.cantidad ? 'error-cantidad' : undefined}
         />
+        {errors.cantidad && (
+          <p id="error-cantidad" className="field-error" role="alert">
+            {errors.cantidad}
+          </p>
+        )}
+      </div>
+
+      <div className="form-field">
+        <label htmlFor="numero_wasap">NÚMERO DE WHATSAPP</label>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <span
+            aria-hidden="true"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              minWidth: '56px',
+              padding: '8px 10px',
+              border: '1px solid #ccc',
+              borderRadius: '6px',
+              background: pais ? '#f5f5f5' : '#eee',
+              color: pais ? '#333' : '#999',
+              fontWeight: 600,
+              fontSize: '14px',
+            }}
+          >
+            {prefijo || '+--'}
+          </span>
+          <input
+            id="numero_wasap"
+            name="numero_wasap"
+            type="tel"
+            inputMode="numeric"
+            autoComplete="tel"
+            placeholder="ejemplo: 969441234"
+            value={numeroWasap}
+            onChange={(e) => setNumeroWasap(e.target.value.replace(/[^0-9\s\-()+]/g, ''))}
+            required
+            aria-required="true"
+            aria-invalid={Boolean(errors.numero_wasap)}
+            aria-describedby={errors.numero_wasap ? 'error-numero_wasap' : undefined}
+            pattern="[0-9]{7,12}"
+            style={{ flex: 1 }}
+          />
+        </div>
         {errors.numero_wasap && (
           <p id="error-numero_wasap" className="field-error" role="alert">
             {errors.numero_wasap}
@@ -200,7 +303,7 @@ export default function SolicitudForm() {
       </div>
 
       <div className="form-field">
-        <label htmlFor="NOTA_ADICIONAL">NOTA ADICIONAL</label>
+        <label htmlFor="NOTA_ADICIONAL">Nota adicional</label>
         <textarea
           id="NOTA_ADICIONAL"
           name="NOTA_ADICIONAL"

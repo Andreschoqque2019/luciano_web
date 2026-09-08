@@ -16,3 +16,14 @@ export const TODOS_METODOS = [...new Set(Object.values(PAGOS_POR_PAIS).flat())]
 export function getMetodosPorPais(pais) {
   return PAGOS_POR_PAIS[pais] || []
 }
+
+export const PREFIJOS = {
+  'Perú': '+51',
+  'México': '+52',
+  'Argentina': '+54',
+  'Venezuela': '+58',
+  'Ecuador': '+593',
+  'Colombia': '+57',
+}
+
+export const getPrefijo = (pais) => PREFIJOS[pais] || ''

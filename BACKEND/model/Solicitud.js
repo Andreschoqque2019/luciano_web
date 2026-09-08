@@ -1,7 +1,7 @@
 const { ObjectId } = require("mongodb");
 const { getDb } = require("../Config/db");
 
-const TIPOS_VALIDOS = ["pase", "orbes", "esencias", "comidas", "gemas"];
+const TIPOS_VALIDOS = ["pase", "orbes", "esencias", "comidas", "gemas", "otro"];
 const PAISES_VALIDOS = ["Perú", "México", "Argentina", "Venezuela", "Ecuador", "Colombia"];
 const PAGOS_POR_PAIS = {
   "Perú": ["Yape", "Binance", "Astropay"],
@@ -12,9 +12,30 @@ const PAGOS_POR_PAIS = {
   "Colombia": ["Nequi", "Binance", "Astropay"],
 };
 const TODOS_METODOS = [...new Set(Object.values(PAGOS_POR_PAIS).flat())];
+const PREFIJOS = {
+  "Perú": "+51",
+  "México": "+52",
+  "Argentina": "+54",
+  "Venezuela": "+58",
+  "Ecuador": "+593",
+  "Colombia": "+57",
+};
 const WHATSAPP_PATTERN = /^\+?[0-9\s\-()]{7,20}$/;
+const WHATSAPP_WITH_PREFIX = /^\+[0-9]{7,15}$/;
+const WHATSAPP_LOCAL_PATTERN = /^[0-9]{7,12}$/;
 
-function validateSolicitud({ tipo, pais, metodoPago, numero_wasap, nota_adicional }) {
+function normalizeWasap(numero_wasap, pais) {
+  if (!numero_wasap || typeof numero_wasap !== "string") return numero_wasap;
+  let raw = numero_wasap.trim().replace(/[\s\-()]/g, "");
+  if (!raw) return raw;
+  if (raw.startsWith("+")) return raw;
+  if (raw.startsWith("00")) return `+${raw.slice(2)}`;
+  const prefijo = PREFIJOS[pais] || "";
+  if (prefijo) return `${prefijo}${raw}`;
+  return `+${raw}`;
+}
+
+function validateSolicitud({ tipo, pais, metodoPago, numero_wasap, nota_adicional, cantidad }) {
   const errors = [];
   if (!tipo || typeof tipo !== "string" || !TIPOS_VALIDOS.includes(tipo)) {
     errors.push(`tipo es requerido y debe ser uno de: ${TIPOS_VALIDOS.join(", ")}`);
@@ -32,10 +53,35 @@ function validateSolicitud({ tipo, pais, metodoPago, numero_wasap, nota_adiciona
   } else if (!TODOS_METODOS.includes(metodoPago)) {
     errors.push(`metodoPago "${metodoPago}" no es válido`);
   }
+  // cantidad: required, integer 1-100
+  if (cantidad === undefined || cantidad === null || String(cantidad).trim() === "") {
+    errors.push("cantidad es requerida y debe ser un entero entre 1 y 100");
+  } else {
+    const num = Number(cantidad);
+    if (!Number.isInteger(num) || num < 1 || num > 100) {
+      errors.push("cantidad debe ser un entero entre 1 y 100");
+    }
+  }
   if (!numero_wasap || typeof numero_wasap !== "string" || !numero_wasap.trim()) {
     errors.push("numero_wasap es requerido");
-  } else if (!WHATSAPP_PATTERN.test(numero_wasap.trim())) {
-    errors.push("numero_wasap formato inválido. Use +?[0-9\\s\\-()]{7,20}");
+  } else {
+    const trimmed = numero_wasap.trim().replace(/[\s\-()]/g, "");
+    if (trimmed.startsWith("+")) {
+      if (!WHATSAPP_WITH_PREFIX.test(trimmed)) {
+        errors.push("numero_wasap formato inválido. Use ^\\+[0-9]{7,15}$");
+      }
+    } else if (trimmed.startsWith("00")) {
+      const withPlus = `+${trimmed.slice(2)}`;
+      if (!WHATSAPP_WITH_PREFIX.test(withPlus)) {
+        errors.push("numero_wasap formato inválido. Use ^\\+[0-9]{7,15}$");
+      }
+    } else {
+      // Sin prefijo: validar local 7-12, pero también aceptar si luego se normalizará con prefijo
+      // Para no romper compatibilidad, si pais tiene prefijo, validar que local 7-12; si no pais, validar full
+      if (!WHATSAPP_LOCAL_PATTERN.test(trimmed) && !WHATSAPP_WITH_PREFIX.test(`+${trimmed}`)) {
+        errors.push("numero_wasap debe tener entre 7 y 12 dígitos (sin prefijo) o formato +[0-9]{7,15}");
+      }
+    }
   }
   if (nota_adicional !== undefined && nota_adicional !== null && nota_adicional !== "") {
     if (typeof nota_adicional !== "string") {
@@ -47,8 +93,21 @@ function validateSolicitud({ tipo, pais, metodoPago, numero_wasap, nota_adiciona
   return errors;
 }
 
-async function createSolicitud({ tipo, pais, metodoPago, numero_wasap, nota_adicional }) {
-  const errors = validateSolicitud({ tipo, pais, metodoPago, numero_wasap, nota_adicional });
+async function createSolicitud({ tipo, pais, metodoPago, numero_wasap, nota_adicional, cantidad }) {
+  // Normalizar numero_wasap con prefijo si falta y pais está presente
+  let wasapNormalized = numero_wasap;
+  if (typeof numero_wasap === "string" && numero_wasap.trim()) {
+    const raw = numero_wasap.trim().replace(/[\s\-()]/g, "");
+    if (!raw.startsWith("+") && !raw.startsWith("00")) {
+      wasapNormalized = normalizeWasap(numero_wasap, pais);
+    } else if (raw.startsWith("00")) {
+      wasapNormalized = `+${raw.slice(2)}`;
+    } else {
+      wasapNormalized = raw;
+    }
+  }
+
+  const errors = validateSolicitud({ tipo, pais, metodoPago, numero_wasap: wasapNormalized, nota_adicional, cantidad });
   if (errors.length > 0) {
     const err = new Error(errors.join("; "));
     err.status = 400;
@@ -61,7 +120,8 @@ async function createSolicitud({ tipo, pais, metodoPago, numero_wasap, nota_adic
     tipo: tipo.trim ? tipo.trim() : tipo,
     pais: pais.trim ? pais.trim() : pais,
     metodoPago: metodoPago.trim ? metodoPago.trim() : metodoPago,
-    numero_wasap: numero_wasap.trim(),
+    numero_wasap: wasapNormalized.trim(),
+    cantidad: Number(cantidad),
     nota_adicional: nota_adicional ? String(nota_adicional).trim() : "",
     status: "pendiente",
     createdAt: new Date(),
@@ -99,5 +159,9 @@ module.exports = {
   PAGOS_POR_PAIS,
   TODOS_METODOS,
   WHATSAPP_PATTERN,
+  WHATSAPP_WITH_PREFIX,
+  WHATSAPP_LOCAL_PATTERN,
+  PREFIJOS,
   validateSolicitud,
+  normalizeWasap,
 };

@@ -53,13 +53,13 @@ function validateSolicitud({ tipo, pais, metodoPago, numero_wasap, nota_adiciona
   } else if (!TODOS_METODOS.includes(metodoPago)) {
     errors.push(`metodoPago "${metodoPago}" no es válido`);
   }
-  // cantidad: required, integer 1-100
+  // cantidad: required, integer >=1 (sin límite máximo)
   if (cantidad === undefined || cantidad === null || String(cantidad).trim() === "") {
-    errors.push("cantidad es requerida y debe ser un entero entre 1 y 100");
+    errors.push("cantidad es requerida y debe ser un entero mayor o igual a 1");
   } else {
     const num = Number(cantidad);
-    if (!Number.isInteger(num) || num < 1 || num > 100) {
-      errors.push("cantidad debe ser un entero entre 1 y 100");
+    if (!Number.isInteger(num) || num < 1) {
+      errors.push("cantidad debe ser un entero mayor o igual a 1");
     }
   }
   if (!numero_wasap || typeof numero_wasap !== "string" || !numero_wasap.trim()) {

@@ -40,8 +40,8 @@ export default function SolicitudForm() {
       next.cantidad = 'LA CANTIDAD ES OBLIGATORIA DRAGONERO.'
     } else {
       const num = Number(cantidad)
-      if (!Number.isInteger(num) || num < 1 || num > 100) {
-        next.cantidad = 'LA CANTIDAD DEBE SER UN NÚMERO ENTERO ENTRE 1 Y 100 DRAGONERO.'
+      if (!Number.isInteger(num) || num < 1) {
+        next.cantidad = 'LA CANTIDAD DEBE SER UN NÚMERO ENTERO MAYOR O IGUAL A 1 DRAGONERO.'
       }
     }
     const wasapRaw = numeroWasap.trim()
@@ -240,7 +240,6 @@ export default function SolicitudForm() {
           type="number"
           inputMode="numeric"
           min={1}
-          max={100}
           step={1}
           placeholder="1"
           value={cantidad}

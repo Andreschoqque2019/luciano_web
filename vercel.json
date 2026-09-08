@@ -1,15 +1,11 @@
 {
-  "version": 2,
-  "builds": [
-    { "src": "FRONTEND/package.json", "use": "@vercel/static-build", "config": { "distDir": "dist" } },
-    { "src": "BACKEND/serve.js", "use": "@vercel/node" },
-    { "src": "api/index.js", "use": "@vercel/node" },
-    { "src": "api/solicitudes.js", "use": "@vercel/node" }
-  ],
   "rewrites": [
-    { "source": "/api/solicitudes", "destination": "/api/solicitudes.js" },
-    { "source": "/api/solicitudes/:path*", "destination": "/api/solicitudes.js" },
-    { "source": "/api/(.*)", "destination": "/BACKEND/serve.js" },
+    { "source": "/api/solicitudes", "destination": "/api/solicitudes" },
+    { "source": "/api/solicitudes/:path*", "destination": "/api/solicitudes" },
+    { "source": "/api/:path*", "destination": "/api/:path*" },
     { "source": "/(.*)", "destination": "/FRONTEND/dist/$1" }
-  ]
+  ],
+  "buildCommand": "npm install --prefix FRONTEND && npm run build --prefix FRONTEND && npm install --prefix BACKEND",
+  "outputDirectory": "FRONTEND/dist",
+  "installCommand": "npm install --prefix FRONTEND && npm install --prefix BACKEND"
 }

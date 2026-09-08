@@ -22,3 +22,17 @@ export async function getSolicitudes(params = {}) {
   if (!res.ok) throw new Error(`Error ${res.status}`);
   return res.json();
 }
+
+export async function getSolicitudesAdmin(password, params = {}) {
+  const qs = new URLSearchParams(params).toString();
+  const url = `${API_BASE}/api/solicitudes${qs ? `?${qs}` : ''}`;
+  const headers = {};
+  if (password) headers['x-admin-password'] = password;
+  const res = await fetch(url, { headers });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    const msg = data.error || data.message || `Error ${res.status}`;
+    throw new Error(msg);
+  }
+  return data;
+}

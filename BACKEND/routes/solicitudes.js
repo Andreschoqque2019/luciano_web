@@ -3,6 +3,28 @@ const { createSolicitud, getSolicitudes, getSolicitudById, PREFIJOS, WHATSAPP_WI
 
 const router = Router();
 
+function requireAdminIfConfigured(req, res, next) {
+  const adminPassword = process.env.ADMIN_PASSWORD;
+  if (!adminPassword) return next();
+  const provided = req.headers["x-admin-password"] || req.query.admin || req.query.admin_password;
+  if (provided && provided === adminPassword) return next();
+  return res.status(401).json({ error: "No autorizado. Credencial de administrador requerida." });
+}
+
+async function handleListSolicitudes(req, res) {
+  try {
+    const { pais, tipo } = req.query;
+    const filter = {};
+    if (pais) filter.pais = pais;
+    if (tipo) filter.tipo = tipo;
+    const list = await getSolicitudes(filter);
+    return res.json(list);
+  } catch (error) {
+    console.error("Error en GET /api/solicitudes:", error);
+    return res.status(500).json({ error: "Error interno del servidor." });
+  }
+}
+
 function normalizeWasapInput(wasap, pais) {
   if (!wasap || typeof wasap !== "string") return wasap;
   let raw = wasap.trim().replace(/[\s\-()]/g, "");
@@ -66,20 +88,11 @@ router.post("/", async (req, res) => {
   }
 });
 
-// GET /api/solicitudes?pais=&tipo=
-router.get("/", async (req, res) => {
-  try {
-    const { pais, tipo } = req.query;
-    const filter = {};
-    if (pais) filter.pais = pais;
-    if (tipo) filter.tipo = tipo;
-    const list = await getSolicitudes(filter);
-    return res.json(list);
-  } catch (error) {
-    console.error("Error en GET /api/solicitudes:", error);
-    return res.status(500).json({ error: "Error interno del servidor." });
-  }
-});
+// GET /api/solicitudes?pais=&tipo=  (protegido si ADMIN_PASSWORD está configurado)
+router.get("/", requireAdminIfConfigured, handleListSolicitudes);
+
+// GET /api/solicitudes/admin  alias protegido (misma lógica)
+router.get("/admin", requireAdminIfConfigured, handleListSolicitudes);
 
 // GET /api/solicitudes/:id
 router.get("/:id", async (req, res) => {

@@ -20,6 +20,10 @@ export default function AgendarPage() {
       <div className="agendar-banner agendar-banner--secondary" aria-hidden="false">
         <img src="/FOTO5.jpg" alt="Dragón en penumbra dorada" loading="lazy" decoding="async" />
       </div>
+
+      <div className="agendar-banner agendar-banner--tertiary" aria-hidden="false">
+        <img src="/FOTO11.jpg" alt="Dragón — FOTO11 protagonista" loading="lazy" decoding="async" />
+      </div>
     </main>
   )
 }

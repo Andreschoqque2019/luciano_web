@@ -32,6 +32,13 @@ export default function ContactosPage() {
         <p className="contactos-nota">
           Horario de atención: Desde las 11 am hora argentina, Hasta las 3 am hora argentina.
         </p>
+        <img
+          src="/FOTO12.jpg"
+          alt="Contacto dragón — FOTO12 protagonista"
+          className="contactos-banner-img contactos-banner-img--secondary"
+          loading="lazy"
+          decoding="async"
+        />
       </section>
     </main>
   )

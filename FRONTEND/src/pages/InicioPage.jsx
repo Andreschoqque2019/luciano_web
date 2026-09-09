@@ -24,6 +24,9 @@ export default function InicioPage() {
           <figure className="inicio-gallery__card">
             <img src="/FOTO5.jpg" alt="Dragón majestuoso en penumbra" loading="lazy" decoding="async" />
           </figure>
+          <figure className="inicio-gallery__card">
+            <img src="/Dragon10.jpg" alt="Dragón — FOTO10 protagonista" loading="lazy" decoding="async" />
+          </figure>
         </section>
       </div>
     </main>

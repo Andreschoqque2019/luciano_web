@@ -494,6 +494,15 @@ img {
   height: 168px;
 }
 
+.agendar-banner--tertiary {
+  height: 168px;
+}
+
+.contactos-banner-img--secondary {
+  margin-top: 1.1rem;
+  margin-bottom: 0;
+}
+
 /* Contactos: protagonist banner FOTO4 */
 .contactos-banner-img {
   width: 100%;
@@ -514,7 +523,8 @@ img {
     border-radius: 0.85rem;
   }
 
-  .agendar-banner--secondary {
+  .agendar-banner--secondary,
+  .agendar-banner--tertiary {
     height: 148px;
   }
 
@@ -799,13 +809,20 @@ img {
     border-radius: 0.85rem;
   }
 
-  .agendar-banner--secondary {
+  .agendar-banner--secondary,
+  .agendar-banner--tertiary {
     height: 132px;
   }
 
   .contactos-banner-img {
     height: 150px;
     margin-bottom: 1rem;
+  }
+
+  .contactos-banner-img--secondary {
+    height: 150px;
+    margin-top: 0.85rem;
+    margin-bottom: 0;
   }
 
   .solicitud-card,
@@ -886,11 +903,16 @@ img {
     height: 212px;
   }
 
-  .agendar-banner--secondary {
+  .agendar-banner--secondary,
+  .agendar-banner--tertiary {
     height: 185px;
   }
 
   .contactos-banner-img {
+    height: 212px;
+  }
+
+  .contactos-banner-img--secondary {
     height: 212px;
   }
 
@@ -924,19 +946,19 @@ img {
   }
 }
 
-/* ── Desktop: 1025px+ (3 cols gallery, max-widths amplios) ── */
+/* ── Desktop: 1025px+ (4 cols gallery for 4 cards, max-widths amplios) ── */
 @media (min-width: 1025px) {
   .page-container {
     padding: 2.5rem 1.5rem;
   }
 
   .inicio-wrap {
-    width: min(100%, 40rem);
+    width: min(100%, 42rem);
     gap: 1.75rem;
   }
 
   .inicio-gallery {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: 0.9rem;
   }
 
@@ -954,11 +976,16 @@ img {
     height: 220px;
   }
 
-  .agendar-banner--secondary {
+  .agendar-banner--secondary,
+  .agendar-banner--tertiary {
     height: 195px;
   }
 
   .contactos-banner-img {
+    height: 220px;
+  }
+
+  .contactos-banner-img--secondary {
     height: 220px;
   }
 

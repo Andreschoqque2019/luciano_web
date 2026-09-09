@@ -1,5 +1,5 @@
 const { Router } = require("express");
-const { createSolicitud, getSolicitudes, getSolicitudById, PREFIJOS, WHATSAPP_WITH_PREFIX } = require("../model/Solicitud");
+const { createSolicitud, getSolicitudes, getSolicitudById, updateSolicitudStatus, PREFIJOS, WHATSAPP_WITH_PREFIX } = require("../model/Solicitud");
 
 const router = Router();
 
@@ -93,6 +93,27 @@ router.get("/", requireAdminIfConfigured, handleListSolicitudes);
 
 // GET /api/solicitudes/admin  alias protegido (misma lógica)
 router.get("/admin", requireAdminIfConfigured, handleListSolicitudes);
+
+// PATCH /api/solicitudes/:id — cambia status (admin)
+router.patch("/:id", requireAdminIfConfigured, async (req, res) => {
+  try {
+    const { id } = req.params;
+    let status = req.body && req.body.status ? req.body.status : "terminada";
+    // Si body vacío o sin status, siempre pasa a terminada
+    if (typeof status !== "string" || !status.trim()) status = "terminada";
+    const updated = await updateSolicitudStatus(id, status);
+    if (!updated) {
+      return res.status(404).json({ error: "Solicitud no encontrada." });
+    }
+    return res.json(updated);
+  } catch (error) {
+    if (error.status === 400) {
+      return res.status(400).json({ error: error.message });
+    }
+    console.error("Error en PATCH /api/solicitudes/:id:", error);
+    return res.status(500).json({ error: "Error interno del servidor." });
+  }
+});
 
 // GET /api/solicitudes/:id
 router.get("/:id", async (req, res) => {

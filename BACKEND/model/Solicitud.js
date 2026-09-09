@@ -150,10 +150,39 @@ async function getSolicitudById(id) {
   return doc;
 }
 
+const ESTADOS_VALIDOS = ["pendiente", "terminada"];
+
+async function updateSolicitudStatus(id, status) {
+  if (!ObjectId.isValid(id)) {
+    const err = new Error("ID inválido");
+    err.status = 400;
+    throw err;
+  }
+  const normalized = String(status || "terminada").trim().toLowerCase();
+  if (!ESTADOS_VALIDOS.includes(normalized)) {
+    const err = new Error(`status debe ser uno de: ${ESTADOS_VALIDOS.join(", ")}`);
+    err.status = 400;
+    throw err;
+  }
+  const db = getDb();
+  const _id = new ObjectId(id);
+  const existing = await db.collection("Solicitudes").findOne({ _id });
+  if (!existing) return null;
+  if (existing.status === normalized) return existing;
+  await db.collection("Solicitudes").updateOne(
+    { _id },
+    { $set: { status: normalized, updatedAt: new Date() } }
+  );
+  const updated = await db.collection("Solicitudes").findOne({ _id });
+  return updated;
+}
+
 module.exports = {
   createSolicitud,
   getSolicitudes,
   getSolicitudById,
+  updateSolicitudStatus,
+  ESTADOS_VALIDOS,
   TIPOS_VALIDOS,
   PAISES_VALIDOS,
   PAGOS_POR_PAIS,

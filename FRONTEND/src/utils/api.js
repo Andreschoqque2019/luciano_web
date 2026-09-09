@@ -36,3 +36,20 @@ export async function getSolicitudesAdmin(password, params = {}) {
   }
   return data;
 }
+
+export async function actualizarEstadoSolicitud(id, password, status = 'terminada') {
+  const url = `${API_BASE}/api/solicitudes/${id}`;
+  const headers = { 'Content-Type': 'application/json' };
+  if (password) headers['x-admin-password'] = password;
+  const res = await fetch(url, {
+    method: 'PATCH',
+    headers,
+    body: JSON.stringify({ status }),
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    const msg = data.error || data.message || `Error ${res.status}`;
+    throw new Error(msg);
+  }
+  return data;
+}

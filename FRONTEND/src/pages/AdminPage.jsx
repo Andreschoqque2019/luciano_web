@@ -29,6 +29,53 @@ function badgeStyle(estado) {
   return { background: '#fef3c7', border: '1px solid #fcd34d', color: '#92400e' }
 }
 
+function getNota(solicitud) {
+  return solicitud.nota_adicional ?? solicitud.NOTA_ADICIONAL ?? solicitud.nota ?? solicitud.NOTA ?? ''
+}
+
+const NOTA_LIMITE_CHARS = 200
+
+function NotaCell({ texto }) {
+  const [expandido, setExpandido] = useState(false)
+  const raw = (texto || '').toString()
+  if (!raw.trim()) {
+    return <span style={{ color: 'var(--stone-400)' }}>—</span>
+  }
+  const esLarga = raw.length > NOTA_LIMITE_CHARS
+  const visible = !esLarga || expandido ? raw : `${raw.slice(0, NOTA_LIMITE_CHARS).trimEnd()}…`
+  return (
+    <div className="admin-note-cell__inner">
+      <span className={`admin-note-text${esLarga && expandido ? ' admin-note-text--expanded' : ''}`}>{visible}</span>
+      {esLarga && (
+        <button type="button" className="admin-note-toggle" onClick={() => setExpandido((v) => !v)} aria-expanded={expandido}>
+          {expandido ? 'Ver menos' : 'Ver más'}
+        </button>
+      )}
+    </div>
+  )
+}
+
+function NotaCard({ texto }) {
+  const [expandido, setExpandido] = useState(false)
+  const raw = (texto || '').toString()
+  if (!raw.trim()) return null
+  const esLarga = raw.length > NOTA_LIMITE_CHARS
+  const visible = !esLarga || expandido ? raw : `${raw.slice(0, NOTA_LIMITE_CHARS).trimEnd()}…`
+  return (
+    <p className="admin-card-item__nota">
+      <span className={`admin-note-text${esLarga && expandido ? ' admin-note-text--expanded' : ''}`}>{visible}</span>
+      {esLarga && (
+        <>
+          {' '}
+          <button type="button" className="admin-note-toggle" onClick={() => setExpandido((v) => !v)} aria-expanded={expandido}>
+            {expandido ? 'Ver menos' : 'Ver más'}
+          </button>
+        </>
+      )}
+    </p>
+  )
+}
+
 export default function AdminPage() {
   const [password, setPassword] = useState('')
   const [isAuthed, setIsAuthed] = useState(() => {
@@ -308,8 +355,8 @@ export default function AdminPage() {
                             {s.numero_wasap || '—'}
                           </a>
                         </td>
-                        <td style={{ maxWidth: '22ch', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={s.nota_adicional || s.nota || ''}>
-                          {s.nota_adicional || s.nota || <span style={{ color: 'var(--stone-400)' }}>—</span>}
+                        <td className="admin-note-cell">
+                          <NotaCell texto={getNota(s)} />
                         </td>
                         <td>
                           <span className="admin-badge" style={{ ...badgeStyle(estado), fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.04em', padding: '4px 8px', borderRadius: '999px', whiteSpace: 'nowrap' }}>
@@ -367,9 +414,7 @@ export default function AdminPage() {
                       <div><dt>Cant.</dt><dd>{s.cantidad ?? '—'}</dd></div>
                       <div><dt>WhatsApp</dt><dd><a href={`https://wa.me/${String(s.numero_wasap || '').replace(/[^0-9]/g, '')}`} target="_blank" rel="noreferrer">{s.numero_wasap || '—'}</a></dd></div>
                     </dl>
-                    {(s.nota_adicional || s.nota) && (
-                      <p className="admin-card-item__nota">{s.nota_adicional || s.nota}</p>
-                    )}
+                    {getNota(s).trim() ? <NotaCard texto={getNota(s)} /> : null}
                     <div style={{ marginTop: '12px' }}>
                       {estado !== 'terminada' ? (
                         <>

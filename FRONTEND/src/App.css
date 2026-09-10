@@ -1376,7 +1376,75 @@ img {
   color: var(--stone-700);
   font-size: 0.8125rem;
   line-height: 1.5;
-  overflow-wrap: break-word;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  white-space: pre-wrap;
+}
+
+/* ── Admin nota: desktop cell + expanded handling ── */
+.admin-note-cell {
+  min-width: 18ch;
+  max-width: 42ch;
+  vertical-align: top !important;
+  white-space: normal !important;
+}
+
+.admin-note-cell__inner {
+  display: grid;
+  gap: 0.35rem;
+  min-width: 0;
+}
+
+.admin-note-text {
+  display: inline;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  line-height: 1.5;
+  color: var(--stone-700);
+  font-size: 0.8125rem;
+  min-width: 0;
+}
+
+.admin-note-text--expanded {
+  display: block;
+  max-height: 14rem;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 0.35rem;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  scrollbar-width: thin;
+}
+
+.admin-note-toggle {
+  justify-self: start;
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--stone-300);
+  background: #fff;
+  color: var(--dragon-red);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  line-height: 1.4;
+  transition:
+    background 150ms ease,
+    border-color 150ms ease,
+    color 150ms ease;
+}
+
+.admin-note-toggle:hover {
+  border-color: var(--dragon-red);
+  background: rgba(185, 28, 28, 0.06);
+  color: var(--dragon-red-deep);
+}
+
+.admin-note-toggle:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
 }
 
 @media (max-width: 720px) {

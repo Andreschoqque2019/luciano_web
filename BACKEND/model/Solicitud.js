@@ -1,7 +1,7 @@
 const { ObjectId } = require("mongodb");
 const { getDb } = require("../Config/db");
 
-const TIPOS_VALIDOS = ["pase", "orbes", "esencias", "comidas", "gemas", "otro"];
+const TIPOS_VALIDOS = ["pase", "orbes", "esencias", "comidas", "gemas", "otro", "alfalfa del dia peruano", "orbis del alfafa"];
 const PAISES_VALIDOS = ["Perú", "México", "Argentina", "Venezuela", "Ecuador", "Colombia"];
 const PAGOS_POR_PAIS = {
   "Perú": ["Yape", "Binance", "Astropay"],
